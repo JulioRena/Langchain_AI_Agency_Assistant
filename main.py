@@ -35,7 +35,7 @@ def responder_pergunta(prompt, chave_openai, modelo="gpt-3.5-turbo"):
     response = openai.ChatCompletion.create(
         model=modelo,
         messages=[
-            {"role": "system", "content": "Você é um assistente que ajuda a interpretar dados e responde perguntas em conversas gerais."},
+            {"role": "system", "content": "Você é um assistente publicitário que ajuda a interpretar dados e responde perguntas em conversas gerais e sobre a agência."},
             {"role": "user", "content": prompt}
         ]
     )
@@ -47,7 +47,7 @@ def verificar_pergunta_sobre_dados(pergunta):
     return any(palavra in pergunta.lower() for palavra in palavras_chave_dados)
 
 # Interface no Streamlit
-st.title("Chat de Análise de Dados e Conversação Geral com OpenAI")
+st.title("OgilvyAI Assistante")
 
 # Adicionando o campo na barra lateral para inserir a chave da OpenAI
 with st.sidebar:
