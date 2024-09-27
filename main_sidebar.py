@@ -3,7 +3,9 @@ import pandas as pd
 import openai
 import os
 import glob
+from dotenv import load_dotenv
 
+chave_openai = os.getenv("OPENAI_API_KEY")
 
 st.set_page_config(
     page_title="Ogilvy AI - Seu assistente pessoal da Ogilvy",
@@ -81,17 +83,17 @@ def verificar_pergunta_sobre_dados(pergunta):
 # Interface no Streamlit
 st.title("OgilvyAI Assistant")
 
-# Adicionando o campo na barra lateral para inserir a chave da OpenAI
-with st.sidebar:
-    st.header("Configurações da OpenAI")
-    chave_openai = st.text_input("Insira sua chave da OpenAI", type="password")
+# # Adicionando o campo na barra lateral para inserir a chave da OpenAI
+# with st.sidebar:
+#     st.header("Configurações da OpenAI")
+#     chave_openai = st.text_input("Insira sua chave da OpenAI", type="password")
 
-# Verifica se a chave foi inserida
-if chave_openai:
-    st.success("Chave da OpenAI foi inserida com sucesso!")
+# # Verifica se a chave foi inserida
+# if chave_openai:
+#     st.success("Chave da OpenAI foi inserida com sucesso!")
     
     # Carregar os dados de todos os arquivos .xlsx na pasta "dados_xlsx"
-    dados = carregar_dados_pasta("dados_xlsx")
+dados = carregar_dados_pasta("dados_xlsx")
 
     # Verificar se há dados carregados
     # if not dados.empty:
@@ -99,21 +101,20 @@ if chave_openai:
     #     st.dataframe(dados)
 
     # Campo para pergunta e interação após a chave ser inserida
-    pergunta = st.text_input("Faça sua pergunta:")
+pergunta = st.text_input("Faça sua pergunta:")
 
-    if pergunta:
-        #if verificar_pergunta_sobre_dados(pergunta):
-            # Gerar o prompt com base nos dados
-        prompt = gerar_prompt_dados(dados, pergunta)
-        #else:
-            # Usar a pergunta diretamente para uma conversa geral
-           # prompt = pergunta
-        
-        # Obter a resposta utilizando a chave da OpenAI inserida
-        resposta = responder_pergunta(prompt, chave_openai)
-        
-        # Mostrar a resposta
-        st.write("Resposta:")
-        st.write(resposta)
-else:
-    st.warning("Por favor, insira sua chave da OpenAI para continuar.")
+if pergunta:
+    #if verificar_pergunta_sobre_dados(pergunta):
+        # Gerar o prompt com base nos dados
+    prompt = gerar_prompt_dados(dados, pergunta)
+    #else:
+        # Usar a pergunta diretamente para uma conversa geral
+        # prompt = pergunta
+    
+    # Obter a resposta utilizando a chave da OpenAI inserida
+    resposta = responder_pergunta(prompt, chave_openai)
+    
+    # Mostrar a resposta
+    st.write("Resposta:")
+    st.write(resposta)
+
