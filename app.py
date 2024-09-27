@@ -90,7 +90,7 @@ with st.container():
     st.markdown("""
     Faça perguntas como:
     - Quais são os principais clientes da agência?
-    - A quanto tempo o cliente x está na Ogilvy?
+    - Há quanto tempo o cliente x está na Ogilvy?
     - Quem é responsável pela área de Data Intelligence?
     - O que faz a área de planejamento da Ogilvy?
     - Quem são os C-levels da Ogilvy?
@@ -99,19 +99,47 @@ with st.container():
     st.markdown("""
     <small><i>Obs: Este é um modelo inicial, foi treinado com uma pequena base de dados, e algumas informações são genéricas ou aleatórias.</i></small>
     """, unsafe_allow_html=True)
-
-dados = carregar_dados_pasta("dados_xlsx")
+    
+    dados = carregar_dados_pasta("dados_xlsx")
 
  
-pergunta = st.text_input("Faça sua pergunta:")
+    pergunta = st.text_input("Faça sua pergunta:")
 
-if pergunta:
-   
-    prompt = gerar_prompt_dados(dados, pergunta)
-   
-    resposta = responder_pergunta(prompt, chave_openai)
+    if pergunta:
     
-    # Mostrar a resposta
-    st.write("Resposta:")
-    st.write(resposta)
+        prompt = gerar_prompt_dados(dados, pergunta)
+    
+        resposta = responder_pergunta(prompt, chave_openai)
+        
+        # Mostrar a resposta
+        st.write("Resposta:")
+        st.write(resposta)
+# Estilizando o footer
+    footer_image = "download.png"
+    st.image(footer_image,width=10, use_column_width=True, output_format='auto')
+    st.markdown(
+        """
+        <style>
+        footer {
+            visibility: hidden;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+# dados = carregar_dados_pasta("dados_xlsx")
+
+ 
+# pergunta = st.text_input("Faça sua pergunta:")
+
+# if pergunta:
+   
+#     prompt = gerar_prompt_dados(dados, pergunta)
+   
+#     resposta = responder_pergunta(prompt, chave_openai)
+    
+#     # Mostrar a resposta
+#     st.write("Resposta:")
+#     st.write(resposta)
 
