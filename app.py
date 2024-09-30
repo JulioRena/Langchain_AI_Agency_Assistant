@@ -61,7 +61,18 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+if 'popup_mostrado' not in st.session_state:
+    with st.expander("⚠️ Aviso", expanded=True):
+        st.write("Bem-vindo ao Assistente de IA da Ogilvy!")
+        st.write("""Este é um modelo inicial,
+                 algumas respostas podem ser genéricas ou aleatórias. O objetivo é mostrar a capacidade
+                 e potencial da IA para a agência. Pode ser aplicado tanto internamente como
+                 para análises e inteligência para os próprios clientes.""")
+        st.session_state.popup_mostrado = True  # Indica que o pop-up foi mostrado
+
 # Função para carregar todos os arquivos .xlsx de uma pasta
+@st.cache_data
+
 def carregar_dados_pasta(pasta):
     arquivos = glob.glob(os.path.join(pasta, "*.xlsx"))
     lista_dfs = []
