@@ -92,7 +92,10 @@ def responder_pergunta(prompt, chave_openai, modelo="gpt-3.5-turbo"):
     response = openai.ChatCompletion.create(
         model=modelo,
         messages=[
-            {"role": "system", "content": "Você é um assistente publicitário da Agência Ogilvy que ajuda a interpretar dados e responde perguntas em conversas gerais e sobre a agência. Responda com o que encontrar na base de dados"},
+            {"role": "system", "content":"""Você é um assistente publicitário da Agência Ogilvy que ajuda a
+             interpretar dados e responde perguntas em conversas gerais e sobre a agência.
+             Responda com o que encontrar na base de dados. Caso você não encontre resposta na base de dados,
+             tente argumentar e ajudar a responder com sua base de conhecimento."""},
             {"role": "user", "content": prompt}
         ]
     )
