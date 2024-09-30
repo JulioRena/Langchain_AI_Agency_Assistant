@@ -14,6 +14,28 @@ st.set_page_config(
     initial_sidebar_state="auto",
   
 )
+
+# Tema customizado com cores da Ogilvy
+st.markdown(
+    """
+    <style>
+    .css-18e3th9 {
+        background-color: #FF0000;
+    }
+    .css-1cpxqw2 {
+        color: #FFFFFF;
+    }
+    header, footer {
+        visibility: hidden;
+    }
+    .css-145kmo2 {
+        color: #000000;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Insert custom CSS for glowing effect
 st.markdown(
     """
@@ -38,6 +60,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 # Função para carregar todos os arquivos .xlsx de uma pasta
 def carregar_dados_pasta(pasta):
     arquivos = glob.glob(os.path.join(pasta, "*.xlsx"))
@@ -83,7 +106,9 @@ def verificar_pergunta_sobre_dados(pergunta):
 # Interface no Streamlit
 st.image("AI.png", width=300)
 
-
+# Histórico de perguntas e respostas
+if 'historico' not in st.session_state:
+    st.session_state.historico = []
 
 with st.container():
     st.header("Este é seu assistente de IA da Ogilvy")
@@ -99,47 +124,38 @@ with st.container():
     st.markdown("""
     <small><i>Obs: Este é um modelo inicial, foi treinado com uma pequena base de dados, e algumas informações são genéricas ou aleatórias.</i></small>
     """, unsafe_allow_html=True)
-    
+
     dados = carregar_dados_pasta("dados_xlsx")
 
- 
     pergunta = st.text_input("Faça sua pergunta:")
 
     if pergunta:
-    
-        prompt = gerar_prompt_dados(dados, pergunta)
-    
-        resposta = responder_pergunta(prompt, chave_openai)
+        with st.spinner('Processando sua pergunta...'):
+            prompt = gerar_prompt_dados(dados, pergunta)
+            resposta = responder_pergunta(prompt, chave_openai)
+        
+        # Adicionar ao histórico
+        st.session_state.historico.append(f"**Pergunta:** {pergunta}\n**Resposta:** {resposta}")
         
         # Mostrar a resposta
         st.write("Resposta:")
         st.write(resposta)
+
+    # Exibir o histórico
+    st.write("### Histórico de Perguntas e Respostas")
+    for item in st.session_state.historico:
+        st.write(item)
+
 # Estilizando o footer
-    footer_image = "download.png"
-    st.image(footer_image,width=10, use_column_width=True, output_format='auto')
-    st.markdown(
-        """
-        <style>
-        footer {
-            visibility: hidden;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-# dados = carregar_dados_pasta("dados_xlsx")
-
- 
-# pergunta = st.text_input("Faça sua pergunta:")
-
-# if pergunta:
-   
-#     prompt = gerar_prompt_dados(dados, pergunta)
-   
-#     resposta = responder_pergunta(prompt, chave_openai)
-    
-#     # Mostrar a resposta
-#     st.write("Resposta:")
-#     st.write(resposta)
-
+footer_image = "download.png"
+st.image(footer_image, width=10, use_column_width=True, output_format='auto')
+st.markdown(
+    """
+    <style>
+    footer {
+        visibility: hidden;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
