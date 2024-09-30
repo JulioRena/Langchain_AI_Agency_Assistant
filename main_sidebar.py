@@ -4,8 +4,19 @@ import openai
 import os
 import glob
 from dotenv import load_dotenv
+import boto3
+from io import BytesIO
 
 chave_openai = os.getenv("OPENAI_API_KEY")
+aws_access_key_id = os.getenv("aws_access_key_id")
+aws_secret_access_key = os.getenv("aws_secret_access_key")
+s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id,
+                     aws_secret_access_key=aws_secret_access_key)
+
+bucket = "ogilvy-data"
+file_key = 'dados_xlsx/'
+#s3.download_file(bucket, file_key, 'local_file.xlsx')
+
 
 st.set_page_config(
     page_title="Ogilvy AI - Seu assistente pessoal da Ogilvy",
@@ -39,17 +50,37 @@ st.markdown(
     unsafe_allow_html=True,
 )
 # Função para carregar todos os arquivos .xlsx de uma pasta
-def carregar_dados_pasta(pasta):
-    arquivos = glob.glob(os.path.join(pasta, "*.xlsx"))
+
+def carregar_dados_s3(pasta_s3, bucket_name):
+    # Acessar as credenciais AWS armazenadas no secrets do Streamlit
+    s3 = boto3.client('s3',
+                      aws_access_key_id=st.secrets["aws"]["aws_access_key_id"],
+                      aws_secret_access_key=st.secrets["aws"]["aws_secret_access_key"])
+
+    # Listar os arquivos na pasta do S3
+    response = s3.list_objects_v2(Bucket=bucket_name, Prefix=pasta_s3)
+    
     lista_dfs = []
-    for arquivo in arquivos:
-        df = pd.read_excel(arquivo)
-        lista_dfs.append(df)
+    
+    if 'Contents' in response:
+        for item in response['Contents']:
+            file_key = item['Key']
+            
+            # Verifica se é um arquivo .xlsx
+            if file_key.endswith('.xlsx'):
+                # Baixar o arquivo do S3
+                file_obj = s3.get_object(Bucket=bucket_name, Key=file_key)
+                # Ler o conteúdo do arquivo diretamente em um DataFrame
+                df = pd.read_excel(BytesIO(file_obj['Body'].read()))
+                lista_dfs.append(df)
+    
     if lista_dfs:
         dados_combinados = pd.concat(lista_dfs, ignore_index=True)
     else:
         dados_combinados = pd.DataFrame()
+    
     return dados_combinados
+
 
 # Função para criar o prompt com base nos dados
 def gerar_prompt_dados(dados, pergunta):
@@ -93,7 +124,7 @@ st.title("OgilvyAI Assistant")
 #     st.success("Chave da OpenAI foi inserida com sucesso!")
     
     # Carregar os dados de todos os arquivos .xlsx na pasta "dados_xlsx"
-dados = carregar_dados_pasta("dados_xlsx")
+dados = carregar_dados_s3(pasta_s3=file_key, bucket_name=bucket)
 
     # Verificar se há dados carregados
     # if not dados.empty:

@@ -81,7 +81,7 @@ def verificar_pergunta_sobre_dados(pergunta):
     return any(palavra in pergunta.lower() for palavra in palavras_chave_dados)
 
 # Interface no Streamlit
-st.image("Ogilvy_logo.png", width=100)
+st.image("AI.png", width=300)
 
 st.title("OgilvyAI Assistant")
 
