@@ -83,7 +83,7 @@ def verificar_pergunta_sobre_dados(pergunta):
 # Interface no Streamlit
 st.image("AI.png", width=300)
 
-st.title("OgilvyAI Assistant")
+
 
 with st.container():
     st.header("Este é seu assistente de IA da Ogilvy")
